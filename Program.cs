@@ -8,14 +8,14 @@ namespace EFTutorial
     {
         static void Main(string[] args)
         {
-            var option;
-            do
-            {
+            var option = "0";
+            do {
                 Console.WriteLine("--Menu--");
                 Console.WriteLine("1. Display Blogs");
                 Console.WriteLine("2. Add Blogs");
                 Console.WriteLine("3. Display Posts");
                 Console.WriteLine("4. Add Post");
+                Console.WriteLine("5.Exit");
                 Console.WriteLine("Please select a option: ");
                 option = Console.ReadLine();
 
@@ -66,8 +66,36 @@ namespace EFTutorial
                 }
                 else if (option == "4")
                 {
-
+                    try
+                    {
                     // 4. Add Post to database
+                    Console.WriteLine("To what blog would you like to post: ");
+                    using (var db = new BlogContext())
+                    {
+                        Console.WriteLine("Here is the list of blogs");
+                        foreach (var b in db.Blogs)
+                        {
+                            Console.WriteLine($"Blog: {b.BlogId}: {b.Name}");
+                        }
+                    }
+                        int blogId;
+                    while(true)
+                        {
+                            Console.WriteLine("Please enter the id of the blog you are posting to: ");
+                            if (int.TryParse(Console.ReadLine(), out blogId))
+                            {
+                                var selectedBlog = blogId;
+                                if (selectedBlog != null)
+                                    break;
+                                else
+                                    Console.WriteLine("Invalid input");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid input please enter a valid number");
+                            }
+                        }                    
+
                     Console.WriteLine("Enter your Post title");
                     var postTitle = Console.ReadLine();
 
@@ -80,8 +108,14 @@ namespace EFTutorial
                         db.Posts.Add(post);
                         db.SaveChanges();
                     }
+                    }catch (Exception ex) 
+                    { 
+                        Console.WriteLine($"An error has occured: {ex.Message}");
+                    }
                 }
-            }while(option != "5")
+            } while (option != "5");
+                
+            
         } 
 
     }
